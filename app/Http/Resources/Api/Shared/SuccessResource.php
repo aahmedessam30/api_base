@@ -23,7 +23,7 @@ class SuccessResource extends JsonResource
     public function toResponse($request)
     {
         $data = is_array($this->resource) ? $this->resource : ['message' => $this->resource];
-        return parent::toResponse($data)->setStatusCode($this->statusCode);
+        return parent::toResponse($request->merge($data))->setStatusCode($this->statusCode);
     }
 
     public function withWrappData()

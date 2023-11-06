@@ -29,12 +29,62 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         $this->routes(function () {
-            Route::middleware('api')
-                ->prefix('api')
-                ->group(base_path('routes/api.php'));
+            $this->mapApiRoutes();
 
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
         });
+    }
+
+    /**
+     * Handle Api routes.
+     */
+    protected function mapApiRoutes(): void
+    {
+        $this->mapDefaultApiRoutes();
+
+        $reqVersion = strtolower(str_starts_with(request()->path(), 'api/')
+            ? (request()->header('api-version') ?? request()->segment(2))
+            : config('api_versions.current_version'));
+
+        if (!is_null(config("api_versions.versions.$reqVersion.files"))) {
+            foreach (config("api_versions.versions.$reqVersion.files") as $version) {
+                $middleware = isset($version['middleware'])
+                    ? array_merge(config("api_versions.versions.$reqVersion.middlewares"), (array)$version['middleware'])
+                    : config("api_versions.versions.$reqVersion.middlewares");
+
+                $route = Route::middleware($middleware)
+                    ->prefix("api/$reqVersion/{$version['prefix']}")
+                    ->group(base_path("routes/api/$reqVersion/{$version['name']}.php"));
+
+                if (isset($version['as'])) {
+                    $route->as("{$version['as']}.");
+                }
+
+                if (isset($version['namespace'])) {
+                    $route->namespace($version['namespace']);
+                }
+            }
+        }
+    }
+
+    /**
+     * Handle Default Api routes.
+     */
+    protected function mapDefaultApiRoutes(): void
+    {
+        foreach (config('api_versions.default_files.files') as $file) {
+            $routes = Route::middleware(config("api_versions.default_files.middlewares"))
+                ->prefix("api/{$file['prefix']}")
+                ->group(base_path("routes/api/{$file['name']}.php"));
+
+            if (isset($file['as'])) {
+                $routes->as("{$file['as']}.");
+            }
+
+            if (isset($file['namespace'])) {
+                $routes->namespace($file['namespace']);
+            }
+        }
     }
 }

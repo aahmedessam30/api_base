@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Api\Shared;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ErrorResource extends JsonResource
@@ -9,13 +10,13 @@ class ErrorResource extends JsonResource
     public int $statusCode;
     public static $wrap = null;
 
-    public function __construct($resource, $statusCode = 200)
+    public function __construct($resource, $statusCode = 400)
     {
         parent::__construct($resource);
         $this->statusCode = $statusCode;
     }
 
-    public function toArray($request)
+    public function toArray(Request $request): array
     {
         return is_array($this->resource) ? $this->resource : ['message' => $this->resource];
     }
@@ -23,7 +24,7 @@ class ErrorResource extends JsonResource
     public function toResponse($request)
     {
         $data = is_array($this->resource) ? $this->resource : ['message' => $this->resource];
-        return parent::toResponse($data)->setStatusCode($this->statusCode);
+        return parent::toResponse($request->merge($data))->setStatusCode($this->statusCode);
     }
 
     public function withWrappData()

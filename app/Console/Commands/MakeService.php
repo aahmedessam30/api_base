@@ -36,13 +36,13 @@ class MakeService extends Command
                 ['{{ namespace }}', '{{ class_name }}'],
                 [$namespace, $class_name],
                 file_get_contents(base_path('stubs/service.stub')));
-            $file      = str_replace('\\', '/', $dir . '/' . $class_name . '.php');
+            $file      = str_replace('\\', '/', "$dir/$class_name.php");
 
             if (!is_dir($dir) && !mkdir($concurrentDirectory = $dir) && !is_dir($concurrentDirectory)) {
                 throw new \RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
             }
 
-            $this->handleOptions($class_name);
+            $this->handleOptions(ucfirst($name));
 
             if (file_exists($file)) {
                 $this->error("Service $class_name already exists.");
@@ -64,7 +64,7 @@ class MakeService extends Command
      * @param string $class_name
      * @return void
      */
-    private function handleOptions(string &$class_name)
+    private function handleOptions(string $class_name)
     {
         if ($this->option('facade')) {
             $this->call('make:facade', ['name' => $class_name]);

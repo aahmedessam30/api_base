@@ -11,7 +11,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(
+            \App\Facades\Authentication\Authentication::class,
+            \App\Services\Authentication\AuthenticationService::class
+        );
+
+        $this->app->bind(
+            \App\Facades\Authentication\ResetPassword::class,
+            \App\Services\Authentication\ResetPasswordService::class
+        );
     }
 
     /**
