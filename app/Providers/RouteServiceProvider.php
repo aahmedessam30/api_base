@@ -43,6 +43,14 @@ class RouteServiceProvider extends ServiceProvider
     {
         $this->mapDefaultApiRoutes();
 
+        $this->mapApiVersionsRoutes();
+    }
+
+    /**
+     * Handle Api versions routes.
+     */
+    protected function mapApiVersionsRoutes(): void
+    {
         $reqVersion = strtolower(str_starts_with(request()->path(), 'api/')
             ? (request()->header('api-version') ?? request()->segment(2))
             : config('api_versions.current_version'));
@@ -54,19 +62,21 @@ class RouteServiceProvider extends ServiceProvider
                     : config("api_versions.versions.$reqVersion.middlewares");
 
                 $route = Route::middleware($middleware)
-                    ->prefix("api/$reqVersion/{$version['prefix']}")
-                    ->group(base_path("routes/api/$reqVersion/{$version['name']}.php"));
+                    ->prefix("api/$reqVersion/{$version['prefix']}");
 
                 if (isset($version['as'])) {
-                    $route->as("{$version['as']}.");
+                    $route->name("{$version['as']}.");
                 }
 
                 if (isset($version['namespace'])) {
                     $route->namespace($version['namespace']);
                 }
+
+                $route->group(base_path("routes/api/$reqVersion/{$version['name']}.php"));
             }
         }
     }
+
 
     /**
      * Handle Default Api routes.
@@ -75,16 +85,17 @@ class RouteServiceProvider extends ServiceProvider
     {
         foreach (config('api_versions.default_files.files') as $file) {
             $routes = Route::middleware(config("api_versions.default_files.middlewares"))
-                ->prefix("api/{$file['prefix']}")
-                ->group(base_path("routes/api/{$file['name']}.php"));
+                ->prefix("api/{$file['prefix']}");
 
             if (isset($file['as'])) {
-                $routes->as("{$file['as']}.");
+                $routes->as("{$file['name']}.");
             }
 
             if (isset($file['namespace'])) {
                 $routes->namespace($file['namespace']);
             }
+
+            $routes->group(base_path("routes/api/{$file['name']}.php"));
         }
     }
 }
