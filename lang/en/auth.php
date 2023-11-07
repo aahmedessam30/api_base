@@ -13,13 +13,14 @@ return [
     |
     */
 
+    'greatings'                       => 'Hello, :name!',
     'failed'                          => 'These credentials do not match our records.',
     'password'                        => 'The provided password is incorrect.',
     'throttle'                        => 'Too many login attempts. Please try again in :seconds seconds.',
     'register_success_check_email_for_verification' => 'User registered successfully, please check your email for verification.',
     'register_failed'                 => 'User registration failed.',
     'verify_email'                    => 'Please verify your email address.',
-    'login_failed'                    => 'Login failed.',
+    'login_failed'                    => 'You have entered an invalid email or password.',
     'logout_all_success'              => 'Logged out from all devices successfully.',
     'logout_success'                  => 'Logged out successfully.',
     'email_already_verified'          => 'Email already verified.',
@@ -33,7 +34,7 @@ return [
     'reset_password_link_failed'      => 'Reset password link failed.',
     'reset_password_email_subject'    => 'Reset Password',
     'received_password_reset_request' => 'You are receiving this email because we received a password reset request for your account.',
-    'reset_password_link_expiration'  => 'This password reset link will expire in :count minutes.',
+    'reset_password_link_expiration'  => 'This password reset Code will expire in :count minutes.',
     'no_further_action_required'      => 'If you did not request a password reset, no further action is required.',
     'reset_password_link_expired'     => 'Reset password link expired.',
     'reset_password_code'             => 'Reset Password Code',

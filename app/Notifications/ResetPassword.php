@@ -45,10 +45,11 @@ class ResetPassword extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-//            ->subject(__('auth.reset_password_email_subject'))
-//            ->line(__('auth.received_password_reset_request'))
-            ->markdown('emails.reset-password', ['token' => $this->token]);
-//            ->line(__('auth.reset_password_link_expiration', ['count' => config('auth.passwords.' . config('auth.defaults.passwords') . '.expire')]))
-//            ->line(__('auth.no_further_action_required'));
+            ->greeting(__('auth.greatings', ['name' => $notifiable->name]))
+            ->subject(__('auth.reset_password_email_subject'))
+            ->line(__('auth.received_password_reset_request'))
+            ->line(__('auth.reset_password_code') . ": **$this->token**")
+            ->line(__('auth.reset_password_link_expiration', ['count' => config('auth.passwords.' . config('auth.defaults.passwords') . '.expire')]))
+            ->line(__('auth.no_further_action_required'));
     }
 }
