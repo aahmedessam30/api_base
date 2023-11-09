@@ -2,12 +2,10 @@
 
 namespace App\Channels;
 
-use App\Messages\TwilioSmsMessage;
+use Twilio\Rest\Client;
 use App\Messages\TwilioWhatsAppMessage;
 use Illuminate\Notifications\Notification;
-use Twilio\Exceptions\ConfigurationException;
-use Twilio\Exceptions\TwilioException;
-use Twilio\Rest\Client;
+use Twilio\Exceptions\{ConfigurationException, TwilioException};
 
 class TwilioChannel
 {
